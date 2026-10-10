@@ -27,9 +27,8 @@
 <label for="code">Code de reprise</label><input id="code" name="code" required autocomplete="off" spellcheck="false">
 <button class="secondary" name="action" value="resume">Reprendre</button></form></details>
 <?php elseif ($record['status']==='submitted'): ?>
-<div class="notice" role="status"><h2>Réponses enregistrées ✓</h2><p>Cet envoi est verrouillé. Il n'est ni publié ni envoyé par e-mail.</p></div>
-<form method="post"><input type="hidden" name="csrf" value="<?=df_h($_SESSION['csrf'])?>">
-<button class="danger" name="action" value="delete">Supprimer mes réponses</button></form>
+<div class="notice" role="status"><h2>Réponses enregistrées ✓</h2><p>Cet envoi est verrouillé. Il n'est ni publié ni envoyé par e-mail. Aucune consultation publique de vos réponses n'est possible.</p></div>
+<details class="delete-confirm"><summary>Supprimer mes réponses</summary><p>La suppression est définitive. Conservez une copie personnelle si nécessaire.</p><form method="post"><input type="hidden" name="csrf" value="<?=df_h($_SESSION['csrf'])?>"><button class="danger" name="action" value="delete">Confirmer la suppression définitive</button></form></details>
 <?php else: ?>
 <div class="resume-key"><strong>Votre code de reprise</strong><code><?=df_h((string)$_SESSION['df_'.$slug])?></code>
 <small>À conserver en lieu sûr : ce code permet de lire ou de supprimer vos réponses.</small></div>
@@ -37,13 +36,13 @@
 <p class="eyebrow">Dernière étape</p><h2>Relire avant l'envoi</h2>
 <?php foreach ($steps as $q): ?>
 <div class="review"><small><?=df_h($q['section'])?></small><h3><?=df_h($q['label'])?></h3>
-<p class="answer"><?=df_h(df_label($q,$record['answers'][$q['id']]??''))?:'—'?></p></div>
+<?php $shown=df_label($q,$record['answers'][$q['id']]??''); ?><p class="answer"><?=($shown===''?'—':df_h($shown))?></p></div>
 <?php endforeach; ?>
 <div class="actions">
 <form method="post"><input type="hidden" name="csrf" value="<?=df_h($_SESSION['csrf'])?>">
 <button class="secondary" name="action" value="review_back">← Modifier</button></form>
 <form method="post"><input type="hidden" name="csrf" value="<?=df_h($_SESSION['csrf'])?>">
-<button class="primary" name="action" value="submit">Envoyer mes réponses</button></form></div>
+<button class="primary" name="action" value="submit">Terminer et verrouiller</button></form></div>
 <?php elseif ($question): ?>
 <div class="step"><span><?=df_h($question['section'])?></span><strong>Question <?=($index+1)?> / <?=count($steps)?></strong></div>
 <progress value="<?=($index+1)?>" max="<?=count($steps)?>" aria-label="Progression du questionnaire"></progress>
@@ -78,8 +77,7 @@
 <?php endif; ?>
 <div class="bottom"><form method="post"><input type="hidden" name="csrf" value="<?=df_h($_SESSION['csrf'])?>">
 <button class="quiet" name="action" value="leave">Quitter sans supprimer</button></form>
-<form method="post"><input type="hidden" name="csrf" value="<?=df_h($_SESSION['csrf'])?>">
-<button class="quiet destructive" name="action" value="delete">Supprimer mes réponses</button></form></div>
+<details class="delete-confirm"><summary>Supprimer mes réponses</summary><p>Cette suppression est définitive.</p><form method="post"><input type="hidden" name="csrf" value="<?=df_h($_SESSION['csrf'])?>"><button class="danger" name="action" value="delete">Confirmer la suppression définitive</button></form></details></div>
 <?php endif; ?>
 </section>
 <?php endif; ?>

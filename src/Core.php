@@ -22,14 +22,16 @@ function df_form(string $slug): array {
                 || !in_array($q['type']??null,['text','textarea','single','multiple','scale'],true))
                 throw new InvalidArgumentException('Question invalide.');
             $c=$q['show_if']??null;
-            if ($c && (!is_array($c) || ($types[$c['question']??'']??null)!=='single'
-                || !in_array($c['equals']??null,$options[$c['question']]??[],true)))
+            if ($c!==null && (!is_array($c) || !is_string($c['question']??null)
+                || !is_string($c['equals']??null)
+                || ($types[$c['question']]??null)!=='single'
+                || !in_array($c['equals'],$options[$c['question']]??[],true)))
                 throw new InvalidArgumentException('Condition invalide.');
             if (in_array($q['type'],['single','multiple'],true)) {
                 $values=[];
                 if (!is_array($q['options']??null) || count($q['options'])<2) throw new InvalidArgumentException('Options manquantes.');
                 foreach ($q['options'] as $o) {
-                    if (!is_string($o['value']??null) || !is_string($o['label']??null)
+                    if (!is_array($o) || !is_string($o['value']??null) || !is_string($o['label']??null) || trim($o['label'])===''
                         || !preg_match('/\A[a-z0-9_-]{1,50}\z/D',$o['value'])
                         || in_array($o['value'],$values,true)) throw new InvalidArgumentException('Option invalide.');
                     $values[]=$o['value'];
@@ -58,13 +60,14 @@ function df_prune(array $form,array $answers): array {
 }
 function df_answer(array $q,mixed $v,bool $required=true): mixed {
     if ($q['type']==='multiple') {
-        if ($v===null) $v=[];
-        if (!is_array($v) || count($v)>20 || count($v)!==count(array_unique($v,SORT_REGULAR))) throw new InvalidArgumentException('Choix invalides.');
+        if ($v===null || $v==='') $v=[];
+        if (!is_array($v) || !array_is_list($v) || count($v)>20 || count($v)!==count(array_unique($v,SORT_REGULAR))) throw new InvalidArgumentException('Choix invalides.');
         foreach ($v as $x) if (!is_string($x) || !in_array($x,array_column($q['options'],'value'),true)) throw new InvalidArgumentException('Choix inconnu.');
         if ($required && $q['required'] && !$v) throw new InvalidArgumentException('Réponse obligatoire.');
         return array_values($v);
     }
     if ($q['type']==='scale') {
+        if (!is_string($v) && !is_int($v) && $v!==null) throw new InvalidArgumentException('Note invalide.');
         if ($v==='' || $v===null) {
             if ($required && $q['required']) throw new InvalidArgumentException('Réponse obligatoire.');
             return '';

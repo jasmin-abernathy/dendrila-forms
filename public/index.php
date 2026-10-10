@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require dirname(__DIR__).'/src/Navigation.php';
+require dirname(__DIR__).'/src/Throttle.php';
 ini_set('session.gc_maxlifetime','604800');
 session_set_cookie_params(['lifetime'=>604800,'path'=>'/','secure'=>!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']!=='off','httponly'=>true,'samesite'=>'Lax']);
 session_start();
@@ -24,7 +25,7 @@ function df_label(array $q,mixed $v): string {
  }
  return (string)$v;
 }
-$slug=(string)($_GET['form']??''); $form=null; $record=null; $error='';
+$slug=is_string($_GET['form']??null)?$_GET['form']:(isset($_GET['form'])?'invalide':''); $form=null; $record=null; $error='';
 try {
  if ($slug!=='') {
   $form=df_form($slug); $key='df_'.$slug;
@@ -35,12 +36,14 @@ try {
    $posted=$_POST['csrf']??null;
    if (!is_string($posted) || $posted==='' || !hash_equals($_SESSION['csrf'],$posted))
     throw new RuntimeException('Session expirée : rechargez la page.');
-   $action=(string)($_POST['action']??'');
+   $action=is_string($_POST['action']??null)?$_POST['action']:'';
    if ($action==='start') {
+    df_throttle('start',8,600);
     session_regenerate_id(true); $_SESSION[$key]=df_start($slug); df_redirect($slug);
    }
    if ($action==='resume') {
-    $candidate=trim((string)($_POST['code']??''));
+    $candidate=is_string($_POST['code']??null)?trim($_POST['code']):'';
+    df_throttle('resume',24,600);
     if (!df_open($candidate,$slug)) throw new InvalidArgumentException('Code de reprise inconnu.');
     session_regenerate_id(true); $_SESSION[$key]=$candidate; df_redirect($slug);
    }
@@ -52,7 +55,7 @@ try {
    if ($action==='submit') { df_submit($record['id'],$form); df_redirect($slug); }
    if ($action==='review_back') { df_review_back($record['id'],$form); df_redirect($slug); }
    if (in_array($action,['next','back'],true)) {
-    $qid=(string)($_POST['question_id']??'');
+    $qid=is_string($_POST['question_id']??null)?$_POST['question_id']:'';
     $answer=$_POST['answer']??'';
     df_move($record['id'],$form,$action,$qid,$answer);
     df_redirect($slug);

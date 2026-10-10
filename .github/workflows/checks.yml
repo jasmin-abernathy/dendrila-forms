@@ -27,8 +27,10 @@ jobs:
         with:
           php-version: '8.3'
       - name: Lint PHP
-        run: find src public tests -name '*.php' -print0 | xargs -0 -n1 php -l
+        run: find src public tests scripts -name '*.php' -print0 | xargs -0 -n1 php -l
       - name: Modèles JSON
         run: php -r 'foreach(glob("forms/*.json") as $f) json_decode(file_get_contents($f),true,512,JSON_THROW_ON_ERROR);'
       - name: Smoke tests
         run: php tests/smoke.php
+      - name: Parcours HTTP
+        run: python3 tests/http_smoke.py
