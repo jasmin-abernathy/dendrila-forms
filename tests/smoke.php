@@ -5,6 +5,9 @@ require dirname(__DIR__).'/src/Navigation.php';
 require dirname(__DIR__).'/src/Throttle.php';
 function check(bool $ok,string $label): void { if (!$ok) throw new RuntimeException('Échec : '.$label); }
 $form=df_form('survey-demo');
+check(df_validate_form($form)===$form,'validation en mémoire');
+try { df_validate_form(['mode'=>'invalid']); check(false,'modèle erroné'); }
+catch (InvalidArgumentException $e) {}
 check(count(df_steps($form,[]))===3,'condition cachée');
 check(count(df_steps($form,['frequency'=>'daily']))===4,'condition visible');
 check(count(df_steps(df_form('interview-demo'),[]))===5,'questions entretien');

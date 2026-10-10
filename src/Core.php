@@ -4,7 +4,9 @@ function df_form(string $slug): array {
     if (!preg_match('/\A[a-z0-9-]{1,60}\z/D',$slug)) throw new InvalidArgumentException('Formulaire inconnu.');
     $file=dirname(__DIR__).'/forms/'.$slug.'.json';
     if (!is_file($file)) throw new InvalidArgumentException('Formulaire inconnu.');
-    $form=json_decode((string)file_get_contents($file),true,512,JSON_THROW_ON_ERROR);
+    return df_validate_form(json_decode((string)file_get_contents($file),true,512,JSON_THROW_ON_ERROR));
+}
+function df_validate_form(mixed $form): array {
     if (!is_array($form) || !in_array($form['mode']??null,['survey','interview'],true)
         || !is_string($form['title']??null) || trim($form['title'])===''
         || !is_string($form['description']??null)
