@@ -1,0 +1,75 @@
+{
+  "mode": "survey",
+  "title": "Enquête sur les outils du quotidien",
+  "description": "Démonstration fictive, sans collecte d'identité. N'indiquez aucune donnée sensible.",
+  "sections": [
+    {
+      "title": "Votre expérience",
+      "questions": [
+        {
+          "id": "frequency",
+          "type": "single",
+          "label": "À quelle fréquence utilisez-vous un outil d'organisation ?",
+          "required": true,
+          "options": [
+            {
+              "value": "daily",
+              "label": "Chaque jour"
+            },
+            {
+              "value": "sometimes",
+              "label": "Parfois"
+            },
+            {
+              "value": "never",
+              "label": "Jamais"
+            }
+          ]
+        },
+        {
+          "id": "difficulty",
+          "type": "scale",
+          "label": "De 1 à 5, comment évaluez-vous sa simplicité ?",
+          "required": true,
+          "min": 1,
+          "max": 5,
+          "show_if": {
+            "question": "frequency",
+            "equals": "daily"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Vos attentes",
+      "questions": [
+        {
+          "id": "features",
+          "type": "multiple",
+          "label": "Quelles fonctions seraient utiles ?",
+          "required": true,
+          "options": [
+            {
+              "value": "notes",
+              "label": "Notes"
+            },
+            {
+              "value": "tasks",
+              "label": "Tâches"
+            },
+            {
+              "value": "reminders",
+              "label": "Rappels"
+            }
+          ]
+        },
+        {
+          "id": "feedback",
+          "type": "textarea",
+          "label": "Un détail à ajouter ?",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

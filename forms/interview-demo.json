@@ -1,0 +1,57 @@
+{
+  "mode": "interview",
+  "title": "Entretien avec une personne engagée",
+  "description": "Parcours éditorial fictif, sans invitation ni publication. N'indiquez aucune donnée sensible.",
+  "sections": [
+    {
+      "title": "Faisons les présentations",
+      "questions": [
+        {
+          "id": "public_name_type",
+          "type": "single",
+          "label": "Comment souhaitez-vous signer l'entretien ?",
+          "required": true,
+          "options": [
+            {
+              "value": "name",
+              "label": "Mon nom"
+            },
+            {
+              "value": "pseudo",
+              "label": "Un pseudonyme"
+            }
+          ]
+        },
+        {
+          "id": "public_name",
+          "type": "text",
+          "label": "Quel nom ou pseudonyme afficher ?",
+          "required": true
+        },
+        {
+          "id": "presentation",
+          "type": "textarea",
+          "label": "Comment souhaitez-vous être présenté·e ? Une idée par ligne.",
+          "required": true
+        }
+      ]
+    },
+    {
+      "title": "Votre parcours",
+      "questions": [
+        {
+          "id": "story",
+          "type": "textarea",
+          "label": "Qu'est-ce qui vous a conduit·e à votre engagement ?",
+          "required": false
+        },
+        {
+          "id": "message",
+          "type": "textarea",
+          "label": "Que souhaiteriez-vous ajouter pour conclure ?",
+          "required": false
+        }
+      ]
+    }
+  ]
+}
